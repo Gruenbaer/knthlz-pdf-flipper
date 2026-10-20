@@ -411,7 +411,7 @@ class PdfFlipper {
   minimumPageWidth(width) { return this.options.readingMode==='single' ? Math.floor(width*.95) : this.options.readingMode==='double' ? Math.max(80,Math.floor(width*.45)) : Math.min(280,Math.floor(width*.95)); }
   resize() {
     if (!this.stage || !this.ratio) return;
-    const width = Math.max(180, Math.min(1200, Math.floor(this.stage.getBoundingClientRect().width)));
+    const width = Math.max(180, Math.min(1200, Math.floor(this.stage.clientWidth)));
     const portrait = ['read','single','scroll'].includes(this.options.readingMode) || (this.options.readingMode!=='double' && width<640);
     const height = Math.max(200, Math.min((window.innerHeight || 900) * .76, (portrait ? width : width / 2) / this.ratio));
     const bookWidth = Math.min(width, height * this.ratio * (portrait ? 1 : 2));
