@@ -1,0 +1,29 @@
+name: Checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - run: node --test Tests/*.test.js
+      - run: php Tests/selection.php && php Tests/settings.php
+      - run: find Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n1 php -l
+      - run: composer validate --strict
+      - run: python3 Build/package.py /tmp/pdf_flipper.zip && python3 Build/package.py /tmp/pdf_flipper_repro.zip && cmp /tmp/pdf_flipper.zip /tmp/pdf_flipper_repro.zip
+  composer-api:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        typo3: ['13.4', '14.3']
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - run: composer config allow-plugins.typo3/cms-composer-installers true && composer config allow-plugins.typo3/class-alias-loader true
+      - run: composer require --no-update "typo3/cms-core:^${{ matrix.typo3 }}"
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: php Tests/composer-api.php
