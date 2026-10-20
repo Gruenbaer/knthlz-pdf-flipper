@@ -1,3 +1,11 @@
+# 0.4.0-beta.1 — 2026-10-20
+
+- Persistent global defaults, named presets and explicit per-content overrides.
+- Effective preset values shown read-only in the native editor.
+- Frameless mode and width OR leaf-height sizing; container width by default.
+- Existing records retain explicit settings until inheritance is chosen.
+- Versioned navigation module import prevents stale browser-cache exports after upgrades.
+
 # Changelog
 
 ## 0.3.0-beta.1 — first public beta

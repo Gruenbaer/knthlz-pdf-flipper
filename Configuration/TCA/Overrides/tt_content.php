@@ -62,8 +62,21 @@ ExtensionManagementUtility::addTCAcolumns('tt_content', [
         'config' => ['type' => 'color', 'default' => '#c3323a'],
     ],
 ]);
+// Existing records retain their explicit values (SQL default legacy). New elements inherit.
+ExtensionManagementUtility::addTCAcolumns('tt_content', [
+    'tx_pdfflipper_preset'=>['label'=>'Reader-Vorlage','description'=>'Global erbt die dauerhaft gespeicherten Vorgaben. Ein Preset ergänzt diese. Nur angekreuzte Abweichungen gelten hier lokal. Bestehende eigene Werte bleiben mit „Bisherige CE-Einstellungen“ erhalten.','config'=>['type'=>'select','renderType'=>'selectSingle','default'=>'inherit','items'=>[['label'=>'Globaler Standard','value'=>'inherit'],['label'=>'Bisherige CE-Einstellungen (alle lokal)','value'=>'legacy']],'itemsProcFunc'=>\Knthlz\PdfFlipper\Domain\ReaderSettings::class.'->presetItems']],
+    'tx_pdfflipper_overrides'=>['label'=>'Vom Preset abweichende Einstellungen','description'=>'Ausgewählte Felder sind bearbeitbar. Die übrigen Felder zeigen schreibgeschützt die aktuell geerbten Werte. Nach Auswahl speichern bzw. Formular neu laden.','displayCond'=>'FIELD:tx_pdfflipper_preset:!=:legacy','config'=>['type'=>'select','renderType'=>'selectCheckBox','items'=>[]]],
+    'tx_pdfflipper_frame'=>['label'=>'Rahmen','config'=>['type'=>'select','renderType'=>'selectSingle','default'=>'framed','items'=>[['label'=>'Mit Rahmen und Hintergrund','value'=>'framed'],['label'=>'Rahmenlos, transparenter Hintergrund','value'=>'frameless']]]],
+    'tx_pdfflipper_sizeaxis'=>['label'=>'Reader-Größe','description'=>'Standard: passt sich der Containerbreite an. Alternativ nur eine feste Breite ODER Blatthöhe vorgeben; das Seitenverhältnis bleibt erhalten.','config'=>['type'=>'select','renderType'=>'selectSingle','default'=>'auto','items'=>[['label'=>'Automatisch an Containerbreite','value'=>'auto'],['label'=>'Maximale Breite (Pixel)','value'=>'width'],['label'=>'Blatthöhe (Pixel)','value'=>'height']]]],
+    'tx_pdfflipper_sizevalue'=>['label'=>'Maß in Pixeln (bei Breite oder Höhe)','description'=>'Bei Auto ohne Wirkung. Zu große Werte werden an den Container angepasst. Die Blatthöhe umfasst keine Werkzeugleiste.','config'=>['type'=>'number','default'=>800,'range'=>['lower'=>200,'upper'=>3000]]],
+]);
+foreach (\Knthlz\PdfFlipper\Domain\ReaderSettings::FIELDS as $field) {
+    $column = 'tx_pdfflipper_'.$field;
+    $GLOBALS['TCA']['tt_content']['columns']['tx_pdfflipper_overrides']['config']['items'][] = ['label'=>$GLOBALS['TCA']['tt_content']['columns'][$column]['label'],'value'=>$field];
+    unset($GLOBALS['TCA']['tt_content']['columns'][$column]['displayCond']);
+}
 ExtensionManagementUtility::addRecordType(
     ['label' => 'knthlz PDF Flipper', 'description' => 'PDF als Blätterbuch mit relevanten Heftseiten', 'value' => 'pdf_flipper', 'icon' => 'mimetypes-pdf', 'group' => 'default'],
-    '--palette--;;headers,assets,tx_pdfflipper_pages,tx_pdfflipper_selection,tx_pdfflipper_start,tx_pdfflipper_layout,--div--;Bilder und Qualität,tx_pdfflipper_format,tx_pdfflipper_quality,tx_pdfflipper_width,tx_pdfflipper_hdwidth,--div--;Reader und Farben,tx_pdfflipper_reading,tx_pdfflipper_effect,tx_pdfflipper_buttons,tx_pdfflipper_accent,tx_pdfflipper_background,tx_pdfflipper_buttonbg,tx_pdfflipper_buttoncolor,tx_pdfflipper_support,--div--;Maus und Bewegung,tx_pdfflipper_corner,tx_pdfflipper_delay,tx_pdfflipper_duration,tx_pdfflipper_clickmode,--div--;Erscheinungsbild,--palette--;;frames,--palette--;;appearanceLinks',
+    '--palette--;;headers,assets,tx_pdfflipper_preset,tx_pdfflipper_overrides,tx_pdfflipper_pages,tx_pdfflipper_selection,tx_pdfflipper_start,tx_pdfflipper_layout,--div--;Bilder und Qualität,tx_pdfflipper_format,tx_pdfflipper_quality,tx_pdfflipper_width,tx_pdfflipper_hdwidth,--div--;Reader und Farben,tx_pdfflipper_frame,tx_pdfflipper_sizeaxis,tx_pdfflipper_sizevalue,tx_pdfflipper_reading,tx_pdfflipper_effect,tx_pdfflipper_buttons,tx_pdfflipper_accent,tx_pdfflipper_background,tx_pdfflipper_buttonbg,tx_pdfflipper_buttoncolor,tx_pdfflipper_support,--div--;Maus und Bewegung,tx_pdfflipper_corner,tx_pdfflipper_delay,tx_pdfflipper_duration,tx_pdfflipper_clickmode,--div--;Erscheinungsbild,--palette--;;frames,--palette--;;appearanceLinks',
     ['columnsOverrides' => ['assets' => ['label' => 'PDF-Datei', 'config' => ['allowed' => 'pdf', 'minitems' => 1, 'maxitems' => 1]]]]
 );

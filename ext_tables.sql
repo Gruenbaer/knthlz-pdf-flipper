@@ -1,4 +1,9 @@
 CREATE TABLE tt_content (
+    tx_pdfflipper_preset varchar(40) DEFAULT 'legacy' NOT NULL,
+    tx_pdfflipper_overrides varchar(255) DEFAULT '' NOT NULL,
+    tx_pdfflipper_frame varchar(12) DEFAULT 'framed' NOT NULL,
+    tx_pdfflipper_sizeaxis varchar(8) DEFAULT 'auto' NOT NULL,
+    tx_pdfflipper_sizevalue int unsigned DEFAULT 800 NOT NULL,
     tx_pdfflipper_effect varchar(8) DEFAULT 'curl' NOT NULL,
     tx_pdfflipper_corner int unsigned DEFAULT 35 NOT NULL,
     tx_pdfflipper_delay int unsigned DEFAULT 120 NOT NULL,

@@ -7,7 +7,7 @@ pages, and keep editing in the normal TYPO3 backend.
 [Releases](https://github.com/Gruenbaer/knthlz-pdf-flipper/releases) ·
 [Redaktionsanleitung](Documentation/Redaktion.md)
 
-**First public beta: 0.3.0-beta.1.** TYPO3 key: `pdf_flipper`.
+**First public beta: 0.4.0-beta.1.** TYPO3 key: `pdf_flipper`.
 Composer package: `knthlz/pdf-flipper`. PHP namespace: `Knthlz\PdfFlipper`.
 
 ## What it does
@@ -33,7 +33,7 @@ For a Composer installation, add the public VCS repository:
 
 ```sh
 composer config repositories.knthlz-pdf-flipper vcs https://github.com/Gruenbaer/knthlz-pdf-flipper.git
-composer require knthlz/pdf-flipper:0.3.0-beta.1
+composer require knthlz/pdf-flipper:0.4.0-beta.1
 vendor/bin/typo3 extension:setup
 ```
 
@@ -96,3 +96,5 @@ is MIT. Their original notices remain in `Resources/Public/Vendor/`.
 `Build/vendor-lock.json` records upstream integrity. Magazine PDFs and site data
 are excluded from the repository and release ZIP. The demo publication belongs to
 its publishers; the software license does not cover its content.
+
+Global defaults, named presets and explicit per-content overrides are available in 0.4. Frameless mode and responsive single-axis sizing are included. See [Configuration](Documentation/Configuration.md).

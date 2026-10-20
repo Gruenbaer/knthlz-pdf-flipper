@@ -1,5 +1,5 @@
 import {mapPages, parsePages, selectPages} from './pages.js';
-import {pageFromFragment, cornerZone, visiblePages, selectedLeavesForSheet, plainSearchText, bookmarkPage} from './navigation.js';
+import {pageFromFragment, cornerZone, visiblePages, selectedLeavesForSheet, plainSearchText, bookmarkPage, readerDimensions} from './navigation.js?v=0.4.0-beta.1';
 
 const asset = path => new URL('../Vendor/' + path, import.meta.url).href;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -29,6 +29,8 @@ class PdfFlipper {
     root.dataset.initialized = 'true';
     try {
       this.options = JSON.parse(root.dataset.pdfFlipper);
+      root.dataset.frame = this.options.frame || 'framed';
+      if (this.options.sizeAxis === 'width') root.style.width = `${Math.max(200, Math.min(3000, this.options.sizeValue || 800))}px`;
       if (this.options.error) throw new Error(this.options.error);
       // FAL must expose a same-origin public PDF. No implicit remote fetch/proxy.
       this.url = new URL(this.options.pdf, location.href);
@@ -411,10 +413,7 @@ class PdfFlipper {
   minimumPageWidth(width) { return this.options.readingMode==='single' ? Math.floor(width*.95) : this.options.readingMode==='double' ? Math.max(80,Math.floor(width*.45)) : Math.min(280,Math.floor(width*.95)); }
   resize() {
     if (!this.stage || !this.ratio) return;
-    const width = Math.max(180, Math.min(1200, Math.floor(this.stage.clientWidth)));
-    const portrait = ['read','single','scroll'].includes(this.options.readingMode) || (this.options.readingMode!=='double' && width<640);
-    const height = Math.max(200, Math.min((window.innerHeight || 900) * .76, (portrait ? width : width / 2) / this.ratio));
-    const bookWidth = Math.min(width, height * this.ratio * (portrait ? 1 : 2));
+    const {height, bookWidth} = readerDimensions(this.stage.clientWidth, this.ratio, this.options.readingMode, this.options.sizeAxis, this.options.sizeValue);
     this.stage.style.height = `${height + 8}px`;
     this.zoomArea.style.width = `${bookWidth * this.zoom}px`; this.zoomArea.style.height = `${(this.options.readingMode === 'scroll' ? (height + 12) * this.pages.length : height) * this.zoom}px`;
     this.bookHost.style.width = `${bookWidth}px`; this.bookHost.style.height = this.options.readingMode === 'scroll' ? 'auto' : `${height}px`;

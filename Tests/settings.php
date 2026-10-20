@@ -15,3 +15,15 @@ echo "Reader settings and PHP/JS-equivalent page map checks passed\n";
 
 $s=ReaderSettings::fromRecord(['tx_pdfflipper_corner'=>-5,'tx_pdfflipper_delay'=>9000,'tx_pdfflipper_duration'=>0,'tx_pdfflipper_effect'=>'x','tx_pdfflipper_clickmode'=>'x','tx_pdfflipper_reading'=>'scroll']);
 check($s['cornerSensitivity']===0&&$s['cornerDelay']===600&&$s['duration']===150&&$s['effect']==='curl'&&$s['clickMode']==='page'&&$s['readingMode']==='scroll','motion bounds and safe defaults');
+
+$config=['default_quality'=>73,'default_corner'=>56,'default_support'=>1,'defaultPreset'=>'frameless','presets'=>'{"school":{"label":"Schule","settings":{"quality":90,"effect":"slide","sizeaxis":"height","sizevalue":500}}}'];
+$inherited=['tx_pdfflipper_preset'=>'inherit','tx_pdfflipper_quality'=>85];
+$s=ReaderSettings::fromRecord($inherited,$config);check($s['quality']===73&&$s['frame']==='frameless'&&$s['cornerSensitivity']===56,'global + default preset, stale CE ignored');
+$config['default_quality']=64;check(ReaderSettings::fromRecord($inherited,$config)['quality']===64,'global changes propagate');
+$s=ReaderSettings::fromRecord(['tx_pdfflipper_preset'=>'school'],$config);check($s['quality']===90&&$s['effect']==='slide'&&$s['sizeAxis']==='height'&&$s['sizeValue']===500,'named preset over global');
+$s=ReaderSettings::fromRecord(['tx_pdfflipper_preset'=>'school','tx_pdfflipper_overrides'=>'corner,support,buttons,quality','tx_pdfflipper_corner'=>0,'tx_pdfflipper_support'=>0,'tx_pdfflipper_buttons'=>'','tx_pdfflipper_quality'=>42],$config);
+check($s['cornerSensitivity']===0&&!$s['showSupport']&&$s['buttons']===[]&&$s['quality']===42,'explicit zero false empty override');
+check(ReaderSettings::fromRecord(['tx_pdfflipper_quality'=>81],$config)['quality']===81,'legacy migration preserves explicit CE');
+check(ReaderSettings::fromRecord(['tx_pdfflipper_preset'=>'missing'],$config)['quality']===64,'unknown preset uses global');
+check(!ReaderSettings::fromRecord(['tx_pdfflipper_support'=>'false'])['showSupport'],'string false is false');
+echo "Global preset inheritance and explicit overrides passed\n";

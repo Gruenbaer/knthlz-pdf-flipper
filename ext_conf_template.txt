@@ -7,3 +7,46 @@ pdftoppm =
 
 # cat=Support; type=string; label=Optionaler Buy-Me-a-Coffee-Link: Nur sichtbar, wenn das Inhaltselement den Unterstützungslink aktiviert. Kein externes Skript.
 supportUrl =
+
+# cat=Reader defaults; type=string; label=Globales Standard-Preset: standard, frameless, quiet, compact oder Schlüssel einer eigenen Vorlage. Änderungen gelten für erbende Inhaltselemente.
+defaultPreset = standard
+# cat=Reader defaults; type=string; label=Eigene Presets (JSON): Objekt mit Schlüsseln und jeweils label und settings. Siehe Configuration.md. Leer verwendet die mitgelieferten Vorlagen.
+presets =
+# cat=Reader defaults; type=options[WebP=webp,JPEG=jpg,PNG=png,PDF=pdf]; label=Bildformat: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_format = webp
+# cat=Reader defaults; type=int+; label=Bildqualität: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_quality = 85
+# cat=Reader defaults; type=int+; label=Vorschau-Auflösung (Pixel): Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_width = 800
+# cat=Reader defaults; type=int+; label=HD-Auflösung (Pixel): Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_hdwidth = 1600
+# cat=Reader defaults; type=string; label=Hintergrundfarbe: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_background = #f4f3f1
+# cat=Reader defaults; type=string; label=Button-Hintergrund: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_buttonbg = #ffffff
+# cat=Reader defaults; type=string; label=Button-Schriftfarbe: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_buttoncolor = #222222
+# cat=Reader defaults; type=options[Automatisch=auto,Einzeln=single,Doppelseiten=double,Ruhig=read,Scrollen=scroll]; label=Lesemodus: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_reading = auto
+# cat=Reader defaults; type=options[Papier=curl,Schieben=slide,Sofort=none]; label=Blättereffekt: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_effect = curl
+# cat=Reader defaults; type=int+; label=Ecken-Empfindlichkeit (0–100): Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_corner = 35
+# cat=Reader defaults; type=int+; label=Ecken-Verzögerung (ms): Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_delay = 120
+# cat=Reader defaults; type=int+; label=Blätterdauer (ms): Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_duration = 650
+# cat=Reader defaults; type=options[Seite=page,Ecken=corners,Buttons=controls]; label=Mausbedienung: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_clickmode = page
+# cat=Reader defaults; type=boolean; label=Unterstützungslink anzeigen: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_support = 0
+# cat=Reader defaults; type=string; label=Sichtbare Bedienelemente (Liste): Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_buttons = previous,page,next,zoom,fullscreen,download,reading,view,overview,search,contents,share,bookmark,back
+# cat=Reader defaults; type=string; label=Akzentfarbe: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_accent = #c3323a
+# cat=Reader defaults; type=options[Mit Rahmen=framed,Rahmenlos=frameless]; label=Rahmen: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_frame = framed
+# cat=Reader defaults; type=options[Container=auto,Breite=width,Höhe=height]; label=Größenachse: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_sizeaxis = auto
+# cat=Reader defaults; type=int+; label=Größenmaß (Pixel): Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
+default_sizevalue = 800
