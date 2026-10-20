@@ -22,6 +22,16 @@ final class ReaderSettings
         }
         return $presets;
     }
+    public static function recordValues(array $settings): array
+    {
+        $map = ['hdwidth'=>'hdWidth','buttonbg'=>'buttonBackground','buttoncolor'=>'buttonColor','reading'=>'readingMode','corner'=>'cornerSensitivity','delay'=>'cornerDelay','clickmode'=>'clickMode','support'=>'showSupport','sizeaxis'=>'sizeAxis','sizevalue'=>'sizeValue'];
+        $values = [];
+        foreach (self::FIELDS as $field) {
+            $value = $settings[$map[$field] ?? $field];
+            $values['tx_pdfflipper_'.$field] = is_array($value) ? implode(',',$value) : (is_bool($value) ? (int)$value : $value);
+        }
+        return $values;
+    }
     public static function presetItems(array &$parameters): void
     {
         foreach (self::presets() as $id=>$preset) $parameters['items'][] = ['label'=>$preset['label'],'value'=>$id];

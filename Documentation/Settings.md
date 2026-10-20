@@ -35,3 +35,7 @@ Exact-page links have the form `#pf-123-p12`, where 123 is the content UID and 1
 the logical magazine leaf. They apply only to that reader and its selected pages.
 A direct page link takes precedence over the configured start. Local bookmarks are
 an explicit convenience; they do not silently override links or the start page.
+
+## Global defaults and presets (0.4)
+
+[Configuration and inheritance](Configuration.md) documents persistent global defaults, named presets, explicit content overrides, frameless mode and single-axis sizing. When enabling a local override, its initial value comes from the current effective preset. Explicit API/import values remain intact.

@@ -29,3 +29,7 @@ ersetzt keinen gut strukturierten HTML-Artikel und keine zugängliche PDF.
 
 Ein Unterstützungslink ist optional. Er erscheint erst nach Freigabe im Inhaltselement
 und einem gültigen Profil-Link in der Extension-Konfiguration. Er steht unter dem Reader.
+
+## Globale Vorgaben und Vorlagen ab 0.4
+
+Neue Reader erben globale Werte. Eine gewählte Vorlage ergänzt diese; einzelne lokale Abweichungen werden bewusst freigeschaltet. Die wirksamen Werte bleiben im Formular sichtbar. [Vorlagen, Rahmen und Größenangaben](Editor.md).

@@ -10,13 +10,12 @@ final class PresetValues implements FormDataProviderInterface
         $row = $result['databaseRow'];
         if ($result['tableName'] !== 'tt_content' || ($row['CType'] ?? '') !== 'pdf_flipper' || ($row['tx_pdfflipper_preset'] ?? 'legacy') === 'legacy') return $result;
         $settings = ReaderSettings::fromRecord($row);
-        $map = ['hdwidth'=>'hdWidth','buttonbg'=>'buttonBackground','buttoncolor'=>'buttonColor','reading'=>'readingMode','corner'=>'cornerSensitivity','delay'=>'cornerDelay','clickmode'=>'clickMode','support'=>'showSupport','sizeaxis'=>'sizeAxis','sizevalue'=>'sizeValue'];
+        $values = ReaderSettings::recordValues($settings);
         $overrides = explode(',',(string)($row['tx_pdfflipper_overrides'] ?? ''));
         foreach (ReaderSettings::FIELDS as $field) {
             $column = 'tx_pdfflipper_'.$field;
             if (in_array($field,$overrides,true)) continue;
-            $value = $settings[$map[$field] ?? $field];
-            $result['databaseRow'][$column] = is_array($value) ? implode(',',$value) : (is_bool($value) ? (int)$value : $value);
+            $result['databaseRow'][$column] = $values[$column];
             $result['processedTca']['columns'][$column]['config']['readOnly'] = true;
         }
         return $result;

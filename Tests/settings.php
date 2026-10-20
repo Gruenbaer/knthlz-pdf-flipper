@@ -27,3 +27,15 @@ check(ReaderSettings::fromRecord(['tx_pdfflipper_quality'=>81],$config)['quality
 check(ReaderSettings::fromRecord(['tx_pdfflipper_preset'=>'missing'],$config)['quality']===64,'unknown preset uses global');
 check(!ReaderSettings::fromRecord(['tx_pdfflipper_support'=>'false'])['showSupport'],'string false is false');
 echo "Global preset inheritance and explicit overrides passed\n";
+
+require __DIR__.'/../Classes/Backend/InitializeOverrides.php';
+$GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['pdf_flipper']=['default_corner'=>61];
+$row=['tx_pdfflipper_preset'=>'inherit','tx_pdfflipper_overrides'=>'','tx_pdfflipper_corner'=>35];
+$changed=\Knthlz\PdfFlipper\Backend\InitializeOverrides::initialize($row,['tx_pdfflipper_overrides'=>'corner']);
+check($changed['tx_pdfflipper_corner']===61,'new override starts at inherited value, not stale DB value');
+$changed=\Knthlz\PdfFlipper\Backend\InitializeOverrides::initialize($row,['tx_pdfflipper_overrides'=>'corner','tx_pdfflipper_corner'=>0]);
+check($changed['tx_pdfflipper_corner']===0,'explicit import/API value preserved during override initialization');
+echo "Override activation initialization passed\n";
+
+$changed=\Knthlz\PdfFlipper\Backend\InitializeOverrides::initialize($row,['tx_pdfflipper_overrides'=>['corner']]);
+check($changed['tx_pdfflipper_corner']===61&&$changed['tx_pdfflipper_overrides']==='corner','native checkbox array normalized before DataHandler value processing');
