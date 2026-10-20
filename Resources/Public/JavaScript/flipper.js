@@ -111,7 +111,7 @@ class PdfFlipper {
     });
     full.hidden = !document.fullscreenEnabled;
     const download = node('a', 'pf-download', 'PDF herunterladen'); download.href = this.url.href; download.download = ''; download.title = 'Vollständige Original-PDF herunterladen';
-    this.modeButton=button('Lesemodus', 'Lesen', ()=>this.setReadingMode(this.options.readingMode==='read'?'auto':'read'));
+    this.modeButton=button('Lesemodus', 'Lesen', ()=>this.setReadingMode(this.options.readingMode==='read'?'auto':'read').catch(error=>this.error(error)));
     this.modeButton.setAttribute('aria-pressed',String(this.options.readingMode==='read'));
     const enabled=new Set(this.options.buttons || ['previous','page','next','zoom','fullscreen','download','reading','view','overview','search','contents','share','bookmark','back']);
     const pageControl=node('span','pf-page-control');pageControl.append(this.pageInput,this.pageLabel);
@@ -419,7 +419,7 @@ class PdfFlipper {
     this.zoomArea.style.width = `${bookWidth * this.zoom}px`; this.zoomArea.style.height = `${(this.options.readingMode === 'scroll' ? (height + 12) * this.pages.length : height) * this.zoom}px`;
     this.bookHost.style.width = `${bookWidth}px`; this.bookHost.style.height = this.options.readingMode === 'scroll' ? 'auto' : `${height}px`;
     this.leaves?.forEach(leaf => { if (!this.book) leaf.style.height = `${height}px`; }); this.bookHost.style.transform = `scale(${this.zoom})`;
-    if (this.book) { this.book.getSettings().minWidth = this.minimumPageWidth(bookWidth); this.book.update(); }
+    if (this.book) { this.book.getSettings().minWidth = this.minimumPageWidth(bookWidth); this.bookHost.style.minWidth = `${this.minimumPageWidth(bookWidth) * (this.options.readingMode === 'double' ? 2 : 1)}px`; this.book.update(); }
     if (!this.book) this.paintFlat();
     if (this.loaded) this.renderVisible();
   }
