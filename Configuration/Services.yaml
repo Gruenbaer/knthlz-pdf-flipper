@@ -1,0 +1,16 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+  Knthlz\PdfFlipper\:
+    resource: '../Classes/*'
+  Knthlz\PdfFlipper\DataProcessing\FlipperProcessor:
+    tags:
+      - name: data.processor
+        identifier: pdf-flipper
+  Knthlz\PdfFlipper\Command\RenderCommand:
+    tags:
+      - name: console.command
+        command: 'pdf-flipper:render'
+        description: 'PDF-Flipper-Vorschauen vorab erzeugen'

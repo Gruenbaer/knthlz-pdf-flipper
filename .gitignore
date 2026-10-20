@@ -1,0 +1,7 @@
+/vendor/
+/composer.lock
+/public/
+/.Build/
+/outputs/
+*.zip
+.env*

@@ -1,0 +1,10 @@
+tt_content.pdf_flipper =< lib.contentElement
+tt_content.pdf_flipper {
+    templateName = Flipper
+    templateRootPaths.1987 = EXT:pdf_flipper/Resources/Private/Templates/
+    dataProcessing {
+        10 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+        10.references.fieldName = assets
+        20 = Knthlz\PdfFlipper\DataProcessing\FlipperProcessor
+    }
+}

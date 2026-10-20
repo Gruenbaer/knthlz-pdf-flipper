@@ -1,0 +1,22 @@
+CREATE TABLE tt_content (
+    tx_pdfflipper_effect varchar(8) DEFAULT 'curl' NOT NULL,
+    tx_pdfflipper_corner int unsigned DEFAULT 35 NOT NULL,
+    tx_pdfflipper_delay int unsigned DEFAULT 120 NOT NULL,
+    tx_pdfflipper_duration int unsigned DEFAULT 650 NOT NULL,
+    tx_pdfflipper_clickmode varchar(12) DEFAULT 'page' NOT NULL,
+    tx_pdfflipper_support smallint unsigned DEFAULT 0 NOT NULL,
+    tx_pdfflipper_pages varchar(1024) DEFAULT '' NOT NULL,
+    tx_pdfflipper_selection varchar(16) DEFAULT 'highlight' NOT NULL,
+    tx_pdfflipper_layout varchar(24) DEFAULT 'auto' NOT NULL,
+    tx_pdfflipper_start int unsigned DEFAULT 0 NOT NULL,
+    tx_pdfflipper_format varchar(8) DEFAULT 'webp' NOT NULL,
+    tx_pdfflipper_quality int unsigned DEFAULT 85 NOT NULL,
+    tx_pdfflipper_width int unsigned DEFAULT 800 NOT NULL,
+    tx_pdfflipper_hdwidth int unsigned DEFAULT 1600 NOT NULL,
+    tx_pdfflipper_background varchar(7) DEFAULT '#f4f3f1' NOT NULL,
+    tx_pdfflipper_buttonbg varchar(7) DEFAULT '#ffffff' NOT NULL,
+    tx_pdfflipper_buttoncolor varchar(7) DEFAULT '#222222' NOT NULL,
+    tx_pdfflipper_reading varchar(12) DEFAULT 'auto' NOT NULL,
+    tx_pdfflipper_buttons varchar(255) DEFAULT 'previous,page,next,zoom,fullscreen,download,reading,view,overview,search,contents,share,bookmark,back' NOT NULL,
+    tx_pdfflipper_accent varchar(7) DEFAULT '#c3323a' NOT NULL
+);

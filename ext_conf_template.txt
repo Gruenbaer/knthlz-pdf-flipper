@@ -1,0 +1,9 @@
+# cat=Image processing; type=options[TYPO3 configured graphics processor=typo3,Optional Poppler=poppler]; label=PDF rasterizer: Uses TYPO3 GFX configuration by default. Poppler is explicitly optional.
+backend = typo3
+# cat=Image processing; type=string; label=Optional Poppler pdfinfo path: Empty uses PATH. Not used by the TYPO3 graphics processor.
+pdfinfo =
+# cat=Image processing; type=string; label=Optional Poppler pdftoppm path: Empty uses PATH. Not used by the TYPO3 graphics processor.
+pdftoppm =
+
+# cat=Support; type=string; label=Optionaler Buy-Me-a-Coffee-Link: Nur sichtbar, wenn das Inhaltselement den Unterstützungslink aktiviert. Kein externes Skript.
+supportUrl =

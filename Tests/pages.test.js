@@ -1,0 +1,15 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {mapPages,parsePages,selectPages} from '../Resources/Public/JavaScript/pages.js';
+const portrait={width:595,height:842}, spread={width:1190,height:842};
+test('17 PDF sheets yield exactly 32 leaves with two separate covers',()=>{const p=mapPages([portrait,...Array(15).fill(spread),portrait]);assert.equal(p.length,32);assert.deepEqual(p.slice(0,4).map(x=>[x.pdfPage,x.half]),[[1,null],[2,'left'],[2,'right'],[3,'left']]);assert.equal(p.at(-1).pdfPage,17)});
+test('24 portrait PDF pages stay 24 pages',()=>assert.equal(mapPages(Array(24).fill(portrait)).length,24));
+test('all-spread PDF puts outside back cover at the end',()=>{const p=mapPages(Array(16).fill(spread));assert.equal(p.length,32);assert.equal(p[0].half,'right');assert.equal(p.at(-1).pdfPage,1);assert.equal(p.at(-1).half,'left');assert.equal(new Set(p.map(x=>`${x.pdfPage}:${x.half}`)).size,32)});
+test('manual layouts override detection',()=>{assert.equal(mapPages([spread,spread],'single').length,2);assert.equal(mapPages([spread,spread],'spreads').length,4);assert.equal(mapPages([spread,spread,spread],'mixed').length,4)});
+test('rotated/cropped PDF dimensions must already be viewport dimensions',()=>assert.deepEqual(mapPages([{width:400,height:600}])[0],{pdfPage:1,half:null,width:400,height:600,number:1}));
+test('ranges use original logical numbers, deduplicate and order',()=>assert.deepEqual(parsePages('3–5, 12, 4, 2',32),[2,3,4,5,12]));
+test('empty selection preserves full book',()=>{const p=mapPages(Array(4).fill(portrait));assert.equal(selectPages(p,[],'only').length,4)});
+test('selected excerpt retains original numbers and physical crop mapping',()=>{const all=mapPages([portrait,spread,portrait]);const p=selectPages(all,[3,4],'only');assert.deepEqual(p.map(x=>[x.number,x.pdfPage,x.half]),[[3,2,'right'],[4,3,null]])});
+test('highlight keeps all pages and flags only relevant ones',()=>{const p=selectPages(mapPages(Array(5).fill(portrait)),[3]);assert.equal(p.length,5);assert.deepEqual(p.filter(x=>x.relevant).map(x=>x.number),[3])});
+for(const value of ['0','2-1','3-33','2,','-1','2.5','1;2','<script>','10001'])test(`invalid range rejected: ${value}`,()=>assert.throws(()=>parsePages(value,32)));
+test('invalid page sizes rejected',()=>assert.throws(()=>mapPages([{width:NaN,height:842}])));
