@@ -125,7 +125,7 @@ class PdfFlipper {
     }
     this.root.append(toolbar);
     this.createReadingTools(toolbar, enabled);
-    this.stage = node('div', 'pf-stage'); this.stage.setAttribute('aria-label', 'Heftansicht');
+    this.stage = node('div', 'pf-stage'); this.stage.setAttribute('role', 'group'); this.stage.setAttribute('aria-label', 'Heftansicht');
     this.zoomArea = node('div', 'pf-zoom-area'); this.bookHost = node('div', 'pf-book'); this.zoomArea.append(this.bookHost); this.stage.append(this.zoomArea); this.root.append(this.stage);
     this.stage.addEventListener('scroll', () => this.followScroll(), {passive:true});
     if(this.options.frame==='magazine') {
@@ -146,6 +146,8 @@ class PdfFlipper {
     }
     this.root.addEventListener('keydown', event => {
       if (event.target.matches('input,select,textarea,button,a')) return;
+      // In zoom, the focusable scroll area uses native keys to pan the enlarged page.
+      if (this.zoom > 1 && event.target === this.stage && ['ArrowRight','ArrowLeft','ArrowUp','ArrowDown','Home','End'].includes(event.key)) return;
       if (event.key === 'ArrowRight') { event.preventDefault(); this.go(this.index + 1, 1); }
       if (event.key === 'ArrowLeft') { event.preventDefault(); this.go(this.index - 1, -1); }
       if (event.key === 'Home') { event.preventDefault(); this.go(0); }
@@ -206,7 +208,7 @@ class PdfFlipper {
     this.root.dataset.effect = this.options.effect;
     this.root.dataset.cornerSensitivity = String(this.options.cornerSensitivity);
     this.leaves = this.pages.map(p => {
-      const leaf = node('div', 'pf-leaf'); leaf.dataset.page = String(p.number); leaf.setAttribute('aria-label', `Heftseite ${p.number}`);
+      const leaf = node('div', 'pf-leaf'); leaf.setAttribute('role', 'group'); leaf.dataset.page = String(p.number); leaf.setAttribute('aria-label', `Heftseite ${p.number}`);
       if (p.relevant) leaf.classList.add('pf-leaf-relevant');
       const canvas = node('canvas', 'pf-canvas'); canvas.width = canvas.height = 0; canvas.setAttribute('role', 'img'); canvas.setAttribute('aria-label', `Heftseite ${p.number} als PDF-Abbildung`);
       const loading = node('span', 'pf-loading', `Seite ${p.number} wird geladen …`);

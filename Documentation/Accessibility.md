@@ -24,3 +24,7 @@ is not persisted. View/effect/corner choices are not stored.
 The support option loads no external script, image or payment widget. Clicking its
 plain link navigates to the configured external Buy-Me-a-Coffee profile. Site owners
 should account for that link and explicit local bookmarking in their own privacy information.
+
+## Keyboard checks, 22 October 2026
+
+The labelled page containers have explicit group roles. When focus is inside the enlarged scrollable page area, arrow keys and Home/End retain native scrolling. Use the toolbar to turn pages while zoomed; the reader region also retains its page-turn shortcuts. Live checks confirmed horizontal panning without a page change and page turning without losing zoom. This is a focused functional check, not a screen-reader or conformance certification.
