@@ -1,5 +1,5 @@
 import {mapPages, parsePages, selectPages} from './pages.js';
-import {pageFromFragment, cornerZone, visiblePages, selectedLeavesForSheet, plainSearchText, bookmarkPage, readerDimensions, zoomEdgeTurn} from './navigation.js?v=0.4.1-magazine';
+import {pageFromFragment, cornerZone, visiblePages, selectedLeavesForSheet, plainSearchText, bookmarkPage, readerDimensions, zoomEdgeTurn, spreadTurnIndex} from './navigation.js?v=0.4.1-magazine2';
 
 const asset = path => new URL('../Vendor/' + path, import.meta.url).href;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -507,6 +507,7 @@ class PdfFlipper {
     }
     this.message.textContent = '';
     index = Math.max(0, Math.min(this.pages.length - 1, index));
+    if(direction&&(reduced.matches||this.zoom>1))index=spreadTurnIndex(this.index,this.pages.length,this.book.getOrientation()==='landscape',this.pages[0].number===1,direction);
     if (reduced.matches || this.zoom > 1 || !direction) this.book.turnToPage(index);
     else if (direction > 0) this.book.flipNext('bottom'); else this.book.flipPrev('bottom');
     this.index = Math.min(this.book.getCurrentPageIndex(), this.pages.length - 1);

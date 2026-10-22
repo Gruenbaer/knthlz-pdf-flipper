@@ -41,3 +41,8 @@ export function zoomEdgeTurn({dx, dy, left, maximum, edgeDistance}) {
   if (dx > 0 && left <= 2) return -1;
   return 0;
 }
+
+export function spreadTurnIndex(index,count,double,cover,direction){
+  const step=double?(direction>0?visiblePages(index,count,true,cover).length:(cover&&index===1?1:2)):1;
+  return Math.max(0,Math.min(count-1,index+direction*step));
+}

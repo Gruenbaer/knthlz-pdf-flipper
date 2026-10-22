@@ -50,3 +50,13 @@ test('zoom edge turns require outward horizontal intent after reaching the edge'
   assert.equal(zoomEdgeTurn({dx:-110,dy:8,left:600,maximum:600,edgeDistance:20}),0);
   assert.equal(zoomEdgeTurn({dx:0,dy:0,left:600,maximum:600,edgeDistance:0}),0);
 });
+
+test('immediate zoom/reduced-motion turns advance the full visible spread',async()=>{
+ const {spreadTurnIndex}=await import('../Resources/Public/JavaScript/navigation.js');
+ assert.equal(spreadTurnIndex(0,32,true,true,1),1);
+ assert.equal(spreadTurnIndex(1,32,true,true,1),3);
+ assert.equal(spreadTurnIndex(3,32,true,true,-1),1);
+ assert.equal(spreadTurnIndex(1,32,true,true,-1),0);
+ assert.equal(spreadTurnIndex(3,32,false,true,1),4);
+ assert.equal(spreadTurnIndex(30,32,true,true,1),31);
+});
