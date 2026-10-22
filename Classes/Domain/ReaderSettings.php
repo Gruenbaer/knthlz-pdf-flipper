@@ -57,7 +57,7 @@ final class ReaderSettings
         $width = $number('width', 800, 320, 1200);
         return [
             'accent' => $color('accent', '#c3323a'),
-            'frame' => $enum('frame', ['framed','frameless'], 'framed'),
+            'frame' => $enum('frame', ['framed','frameless','magazine'], 'framed'),
             'sizeAxis' => $enum('sizeaxis', ['auto','width','height'], 'auto'),
             'sizeValue' => $number('sizevalue', 800, 200, 3000),
             'format' => $enum('format', ['webp','jpg','png','pdf'], 'webp'),

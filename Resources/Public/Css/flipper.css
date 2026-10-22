@@ -37,3 +37,27 @@
 .pdf-flipper .pf-progress{flex:1 1 120px;min-width:80px;max-width:250px;accent-color:var(--pf-accent);margin:0 4px;cursor:pointer}
 .pdf-flipper .pf-tools-menu .pf-select-label{justify-content:space-between}
 @media(max-width:480px){.pdf-flipper .pf-progress{order:2;flex-basis:100%;max-width:none}}
+
+/* Magazine appearance preserves the established epiKurier reader chrome. */
+.frame-type-pdf_flipper:has(.pdf-flipper[data-frame="magazine"]){margin-inline:-10px}
+.pdf-flipper[data-frame="magazine"]{max-width:1012px;margin-inline:auto;padding:7px 0;border:0;border-radius:0;background:#fff;color:#292929;font:14px/1.35 Arial,Helvetica,sans-serif}
+.pdf-flipper[data-frame="magazine"] .pf-stage{padding:4px 6px 9px;overflow:hidden;touch-action:pan-y}
+.pdf-flipper[data-frame="magazine"][data-zoom]:not([data-zoom="1"]) .pf-stage{overflow:auto;touch-action:none;cursor:grab}
+.pdf-flipper[data-frame="magazine"] .pf-book{filter:drop-shadow(0 4px 9px #1f1f1f30)}
+.pdf-flipper[data-frame="magazine"] .pf-book.pf-magazine-cover{filter:none}
+.pdf-flipper[data-frame="magazine"] .pf-leaf{box-shadow:none}
+.pdf-flipper[data-frame="magazine"] .pf-toolbar{display:grid;grid-template-columns:auto minmax(60px,1fr) auto;gap:5px;min-height:39px;width:100%;margin:0;padding:3px 6px;border:1px solid #e3e3e3;border-top:2px solid var(--pf-accent);border-radius:0 0 8px 8px;color:#313131;background:#fafafa;box-shadow:0 2px 9px #00000014}
+.pdf-flipper[data-frame="magazine"] .pf-magazine-controls,.pdf-flipper[data-frame="magazine"] .pf-magazine-tools{display:flex;align-items:center;gap:3px;min-width:0}
+.pdf-flipper[data-frame="magazine"] .pf-magazine-controls{grid-column:1}.pdf-flipper[data-frame="magazine"] .pf-magazine-tools{grid-column:3;justify-content:flex-end}
+.pdf-flipper[data-frame="magazine"] .pf-progress{grid-column:2;width:100%;height:21px;max-width:none;min-width:60px;margin:0;order:0}
+.pdf-flipper[data-frame="magazine"] :is(.pf-button,.pf-download){display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:29px;height:29px;min-width:0;min-height:0;padding:0;border:1px solid transparent;border-radius:6px;color:#414141;background:transparent;font:19px/1 Arial,Helvetica,sans-serif;text-decoration:none}
+.pdf-flipper[data-frame="magazine"] :is(.pf-button,.pf-download):hover:not(:disabled){color:var(--pf-accent);background:color-mix(in srgb,var(--pf-accent) 12%,white)}
+.pdf-flipper[data-frame="magazine"] .pf-page-input{display:none}.pdf-flipper[data-frame="magazine"] .pf-page-label{display:inline-flex;align-items:center;justify-content:center;height:29px;min-width:66px;font-size:12px;font-weight:700}
+.pdf-flipper[data-frame="magazine"] .pf-download svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pdf-flipper[data-frame="magazine"] .pf-button[aria-label="Vorherige Seite"],.pdf-flipper[data-frame="magazine"] .pf-button[aria-label="Nächste Seite"]{font-size:0}
+.pdf-flipper[data-frame="magazine"] .pf-button:is([aria-label="Vorherige Seite"],[aria-label="Nächste Seite"])::before{content:"";width:8px;height:8px;border-top:2px solid currentColor;border-right:2px solid currentColor}
+.pdf-flipper[data-frame="magazine"] .pf-button[aria-label="Vorherige Seite"]::before{transform:rotate(-135deg);margin-left:3px}.pdf-flipper[data-frame="magazine"] .pf-button[aria-label="Nächste Seite"]::before{transform:rotate(45deg);margin-right:3px}
+@media(max-width:520px){.pdf-flipper[data-frame="magazine"] .pf-toolbar{gap:4px;padding:3px 4px}.pdf-flipper[data-frame="magazine"] :is(.pf-magazine-controls,.pf-magazine-tools){gap:1px}.pdf-flipper[data-frame="magazine"] .pf-page-label{min-width:62px}.pdf-flipper[data-frame="magazine"] :is(.pf-button,.pf-download){width:28px;height:28px}}
+
+.pdf-flipper[data-frame="magazine"][data-reading-mode="scroll"] .pf-stage{overflow:auto;touch-action:pan-y}
+.pdf-flipper[data-frame="magazine"]:fullscreen{max-width:none;height:100vh;padding:12px;display:flex;flex-direction:column;justify-content:center;background:#f8f8f8}

@@ -24,10 +24,10 @@ export function bookmarkPage(raw, availablePages) {
 }
 
 // One sizing axis only. The container always wins over a requested fixed size.
-export function readerDimensions(container, ratio, mode, axis = 'auto', value = 800) {
+export function readerDimensions(container, ratio, mode, axis = 'auto', value = 800, doubleThreshold = 640) {
   const available = Math.max(1, Math.floor(Number(container) || 1));
   const width = axis === 'width' ? Math.min(available, Math.max(200, Math.min(3000, Number(value) || 800))) : available;
-  const single = ['read','single','scroll'].includes(mode) || (mode !== 'double' && width < 640);
+  const single = ['read','single','scroll'].includes(mode) || (mode !== 'double' && width < doubleThreshold);
   const leaves = single ? 1 : 2;
   const naturalHeight = width / (ratio * leaves);
   const height = axis === 'height' ? Math.min(naturalHeight, Math.max(200, Math.min(3000, Number(value) || 800))) : naturalHeight;

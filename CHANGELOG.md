@@ -1,5 +1,6 @@
 # 0.4.1-beta.1 — 2026-10-22
 
+- Optional magazine appearance preserves the established centered cover and slim toolbar below the book.
 - Flexible magazine covers retain freely draggable paper corners and adjustable hover sensitivity.
 - Turn while zoomed: deliberate outward drag at a horizontal edge, or an edge click; zoom is retained.
 - Vertical panning and short drags do not turn pages; scroll and controls-only modes remain explicit.

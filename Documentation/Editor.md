@@ -21,3 +21,5 @@ Wechsel von „Bisherige CE-Einstellungen“ zu einer Vorlage aktiviert die Vere
 Color settings are native TYPO3 color fields: use the picker or enter a six-digit hex value. The global accent is inherited unless a preset supplies it or the editor enables a local accent override. On epiKurier the standard is `#c3323a`, School uses `#00718e` and Young uses `#078f98`. Those site presets are configuration, not hard-coded extension colors.
 
 The optional page slider appears in the main toolbar. Reading view, effect and corner sensitivity are under More. A flexible page can be held at a corner and moved both ways before release. At zoom, first pan to an edge, then continue a deliberate horizontal drag to turn; a click on that outer edge also turns without resetting zoom.
+
+The magazine appearance is a separate selectable frame style. It preserves the previous epiKurier composition: centered cover, toolbar below the pages, slim page counter and slider, icon-only download, and the original Arial typography. The epiKurier preset enables only its previous main-bar controls; other tools can be enabled explicitly without changing the extension's generic defaults.

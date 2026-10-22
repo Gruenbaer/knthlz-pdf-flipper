@@ -1,5 +1,5 @@
 import {mapPages, parsePages, selectPages} from './pages.js';
-import {pageFromFragment, cornerZone, visiblePages, selectedLeavesForSheet, plainSearchText, bookmarkPage, readerDimensions, zoomEdgeTurn} from './navigation.js?v=0.4.1';
+import {pageFromFragment, cornerZone, visiblePages, selectedLeavesForSheet, plainSearchText, bookmarkPage, readerDimensions, zoomEdgeTurn} from './navigation.js?v=0.4.1-magazine';
 
 const asset = path => new URL('../Vendor/' + path, import.meta.url).href;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -128,6 +128,15 @@ class PdfFlipper {
     this.stage = node('div', 'pf-stage'); this.stage.setAttribute('aria-label', 'Heftansicht');
     this.zoomArea = node('div', 'pf-zoom-area'); this.bookHost = node('div', 'pf-book'); this.zoomArea.append(this.bookHost); this.stage.append(this.zoomArea); this.root.append(this.stage);
     this.stage.addEventListener('scroll', () => this.followScroll(), {passive:true});
+    if(this.options.frame==='magazine') {
+      const controls=node('div','pf-magazine-controls'),tools=node('div','pf-magazine-tools');
+      for(const control of [this.prev,pageControl,this.next])if(control.parentNode===toolbar)controls.append(control);
+      for(const control of [this.minus,this.plus,full,download])if(control.parentNode===toolbar)tools.append(control);
+      download.replaceChildren();download.setAttribute('aria-label','PDF herunterladen');
+      const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');
+      const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M12 3v12m-4-4 4 4 4-4M4 20h16');svg.append(path);download.append(svg);
+      toolbar.prepend(controls);toolbar.append(tools);this.root.append(toolbar);
+    }
     if (this.relevant.length) {
       const nav = node('nav', 'pf-relevant'); nav.setAttribute('aria-label', 'Relevante Heftseiten');
       nav.append(node('span', '', 'Relevante Seiten:'));
@@ -447,14 +456,17 @@ class PdfFlipper {
     }, {signal: events.signal});
   }
   }
-  minimumPageWidth(width) { return this.options.readingMode==='single' ? Math.floor(width*.95) : this.options.readingMode==='double' ? Math.max(80,Math.floor(width*.45)) : Math.min(280,Math.floor(width*.95)); }
+  minimumPageWidth(width) { if(this.options.frame==='magazine'&&this.options.readingMode==='auto')return Math.min(260,Math.floor(width*.95));return this.options.readingMode==='single' ? Math.floor(width*.95) : this.options.readingMode==='double' ? Math.max(80,Math.floor(width*.45)) : Math.min(280,Math.floor(width*.95)); }
   resize() {
     if (!this.stage || !this.ratio) return;
-    const {height, bookWidth} = readerDimensions(this.stage.clientWidth, this.ratio, this.options.readingMode, this.options.sizeAxis, this.options.sizeValue);
-    this.stage.style.height = `${height + 8}px`;
+    const magazine=this.options.frame==='magazine';
+    const available=magazine?Math.min(this.stage.clientWidth-12,document.fullscreenElement===this.root?1480:1000):this.stage.clientWidth;
+    let {height, bookWidth} = readerDimensions(available, this.ratio, this.options.readingMode, this.options.sizeAxis, this.options.sizeValue,magazine?560:640);
+    if(magazine&&document.fullscreenElement===this.root){const scale=Math.min(1,Math.max(120,innerHeight-76)/height);height*=scale;bookWidth*=scale;}
+    this.stage.style.height = `${height + (magazine?13:8)}px`;
     this.zoomArea.style.width = `${bookWidth * this.zoom}px`; this.zoomArea.style.height = `${(this.options.readingMode === 'scroll' ? (height + 12) * this.pages.length : height) * this.zoom}px`;
     this.bookHost.style.width = `${bookWidth}px`; this.bookHost.style.height = this.options.readingMode === 'scroll' ? 'auto' : `${height}px`;
-    this.leaves?.forEach(leaf => { if (!this.book) leaf.style.height = `${height}px`; }); this.bookHost.style.transform = `scale(${this.zoom})`;
+    this.leaves?.forEach(leaf => { if (!this.book) leaf.style.height = `${height}px`; }); this.bookHost.style.transform = `scale(${this.zoom})`;this.magazineCover(bookWidth);
     if (this.book) { this.book.getSettings().minWidth = this.minimumPageWidth(bookWidth); this.bookHost.style.minWidth = `${this.minimumPageWidth(bookWidth) * (this.options.readingMode === 'double' ? 2 : 1)}px`; this.book.update(); }
     if (!this.book) this.paintFlat();
     if (this.loaded) this.renderVisible();
@@ -474,7 +486,8 @@ class PdfFlipper {
     const numbers = indices.map(i => this.pages[i].number);
     if(this.progress){this.progress.value=String(this.index);this.progress.setAttribute('aria-valuetext',`Heftseite ${numbers.join(' bis ')} von ${this.all.length}`);}
     this.pageInput.value = String(numbers[0]); this.prev.disabled = this.index === 0; this.next.disabled = this.index >= this.pages.length - 1 || indices.includes(this.pages.length - 1);
-    this.pageLabel.textContent = ` / ${this.all.length}${numbers.length > 1 ? ' · ' + numbers.join('–') : ''}`;
+    this.pageLabel.textContent = this.options.frame==='magazine'?`${numbers.join('–')} / ${this.all.length}`:` / ${this.all.length}${numbers.length > 1 ? ' · ' + numbers.join('–') : ''}`;
+    this.magazineCover(this.bookHost.clientWidth);
     this.root.dataset.currentPage = String(numbers[0]);
     if(this.backButton)this.backButton.disabled=!this.trail.length;
     if (this.relevantNav) for (const b of this.relevantNav.querySelectorAll('button')) b.setAttribute('aria-pressed', String(numbers.includes(Number(b.textContent))));
@@ -498,6 +511,13 @@ class PdfFlipper {
     else if (direction > 0) this.book.flipNext('bottom'); else this.book.flipPrev('bottom');
     this.index = Math.min(this.book.getCurrentPageIndex(), this.pages.length - 1);
     this.update(); this.renderVisible();
+  }
+  magazineCover(width) {
+    if(this.options.frame!=='magazine'||!this.book)return;
+    const single=this.book.getOrientation()==='landscape'&&this.zoom===1&&(this.index===0||this.index===this.pages.length-1);
+    this.bookHost.classList.toggle('pf-magazine-cover',single);
+    const shift=single?(this.index===0?-width/4:width/4):0;
+    this.bookHost.style.transform=`translateX(${shift}px) scale(${this.zoom})`;
   }
   setZoom(value) {
     this.zoom = Math.max(1, Math.min(3, value)); this.minus.disabled = this.zoom === 1; this.plus.disabled = this.zoom === 3;
