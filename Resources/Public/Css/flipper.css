@@ -33,3 +33,7 @@
 .pdf-flipper[data-frame="frameless"]{border:0;border-radius:0;padding:0;background:transparent}
 .pdf-flipper[data-frame="frameless"]:fullscreen{padding:12px;background:var(--pf-background,#f4f3f1)}
 .pdf-flipper:fullscreen{width:100vw!important;max-width:100vw}
+
+.pdf-flipper .pf-progress{flex:1 1 120px;min-width:80px;max-width:250px;accent-color:var(--pf-accent);margin:0 4px;cursor:pointer}
+.pdf-flipper .pf-tools-menu .pf-select-label{justify-content:space-between}
+@media(max-width:480px){.pdf-flipper .pf-progress{order:2;flex-basis:100%;max-width:none}}

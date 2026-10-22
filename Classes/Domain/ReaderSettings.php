@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace Knthlz\PdfFlipper\Domain;
 final class ReaderSettings
 {
-    public const BUTTONS = ['previous','page','next','zoom','fullscreen','download','reading','view','overview','search','contents','share','bookmark','back'];
+    public const BUTTONS = ['previous','page','next','progress','zoom','fullscreen','download','reading','view','overview','search','contents','share','bookmark','back'];
     public const FIELDS = ['format','quality','width','hdwidth','background','buttonbg','buttoncolor','reading','effect','corner','delay','duration','clickmode','support','buttons','accent','frame','sizeaxis','sizevalue'];
     public static function presets(?array $config = null): array
     {

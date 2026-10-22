@@ -40,3 +40,13 @@ test('container sizing, one axis, responsive aspect ratio and small screens',()=
     const r=readerDimensions(248,ratio,mode,axis,2000);assert.ok(r.bookWidth<=248);assert.ok(r.height>0);assert.ok(Math.abs(r.bookWidth/r.height-ratio*(r.single?1:2))<.00001);
   }
 });
+
+test('zoom edge turns require outward horizontal intent after reaching the edge', async () => {
+  const {zoomEdgeTurn}=await import('../Resources/Public/JavaScript/navigation.js');
+  assert.equal(zoomEdgeTurn({dx:-110,dy:8,left:600,maximum:600,edgeDistance:75}),1);
+  assert.equal(zoomEdgeTurn({dx:90,dy:4,left:0,maximum:600,edgeDistance:85}),-1);
+  assert.equal(zoomEdgeTurn({dx:-110,dy:8,left:300,maximum:600,edgeDistance:75}),0);
+  assert.equal(zoomEdgeTurn({dx:-110,dy:140,left:600,maximum:600,edgeDistance:90}),0);
+  assert.equal(zoomEdgeTurn({dx:-110,dy:8,left:600,maximum:600,edgeDistance:20}),0);
+  assert.equal(zoomEdgeTurn({dx:0,dy:0,left:600,maximum:600,edgeDistance:0}),0);
+});

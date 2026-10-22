@@ -3,7 +3,7 @@ require __DIR__.'/../Classes/Domain/ReaderSettings.php';require __DIR__.'/../Cla
 use Knthlz\PdfFlipper\Domain\ReaderSettings;
 use Knthlz\PdfFlipper\Domain\PageMap;
 function check(bool $ok,string $message):void{if(!$ok)throw new RuntimeException($message);}
-$s=ReaderSettings::fromRecord([]);check($s['format']==='webp'&&$s['quality']===85&&count($s['buttons'])===14,'defaults');
+$s=ReaderSettings::fromRecord([]);check($s['format']==='webp'&&$s['quality']===85&&count($s['buttons'])===15&&in_array('progress',$s['buttons'],true),'defaults');
 $s=ReaderSettings::fromRecord(['tx_pdfflipper_format'=>'../evil','tx_pdfflipper_quality'=>1000,'tx_pdfflipper_width'=>5000,'tx_pdfflipper_hdwidth'=>0,'tx_pdfflipper_background'=>'red;position:fixed','tx_pdfflipper_buttons'=>'zoom,invalid,download','tx_pdfflipper_reading'=>'read']);
 check($s['format']==='webp'&&$s['quality']===100&&$s['width']===1200&&$s['hdWidth']===1200,'bounds');check($s['background']==='#f4f3f1'&&$s['buttons']===['zoom','download']&&$s['readingMode']==='read','allowed settings');
 check(ReaderSettings::fromRecord(['tx_pdfflipper_buttons'=>''])['buttons']===[],'hide all');

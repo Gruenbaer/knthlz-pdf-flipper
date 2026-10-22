@@ -21,8 +21,10 @@
 
 Reading layout and turn effect are independent. Quiet reading and continuous scroll
 suppress paper/slide animation. Reduced-motion preferences suppress animated turns
-and corner hover. At zoom > 1, pan replaces page gestures. Keyboard navigation and
-buttons remain available. Coarse pointers do not trigger corner hover.
+and corner hover. At zoom > 1, dragging pans the page. Continuing a horizontal drag at a page edge
+by at least 70 px turns the page on release, retaining zoom. A click on the visible
+outer edge also turns; vertical scrolling never does. Controls-only and continuous
+scroll modes suppress these gestures. Keyboard navigation and buttons remain available. Coarse pointers do not trigger corner hover.
 
 The page overview uses lazy standard previews; direct-PDF mode shows a numbered grid.
 Text search and PDF outline extraction load the original PDF only when requested.

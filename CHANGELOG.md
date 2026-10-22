@@ -1,3 +1,11 @@
+# 0.4.1-beta.1 — 2026-10-22
+
+- Flexible magazine covers retain freely draggable paper corners and adjustable hover sensitivity.
+- Turn while zoomed: deliberate outward drag at a horizontal edge, or an edge click; zoom is retained.
+- Vertical panning and short drags do not turn pages; scroll and controls-only modes remain explicit.
+- Optional page slider; advanced view/effect controls moved to More to keep the main toolbar compact.
+- Native TYPO3 color pickers and hex fields retain global → preset → content override inheritance.
+
 # 0.4.0-beta.1 — 2026-10-20
 
 - Persistent global defaults, named presets and explicit per-content overrides.

@@ -41,7 +41,7 @@ default_clickmode = page
 # cat=Reader defaults; type=boolean; label=Unterstützungslink anzeigen: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
 default_support = 0
 # cat=Reader defaults; type=string; label=Sichtbare Bedienelemente (Liste): Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
-default_buttons = previous,page,next,zoom,fullscreen,download,reading,view,overview,search,contents,share,bookmark,back
+default_buttons = previous,page,next,progress,zoom,fullscreen,download,reading,view,overview,search,contents,share,bookmark,back
 # cat=Reader defaults; type=string; label=Akzentfarbe: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.
 default_accent = #c3323a
 # cat=Reader defaults; type=options[Mit Rahmen=framed,Rahmenlos=frameless]; label=Rahmen: Dauerhafte Vorgabe; Preset und explizite CE-Abweichung haben Vorrang.

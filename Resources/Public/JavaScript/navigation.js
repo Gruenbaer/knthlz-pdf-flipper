@@ -33,3 +33,11 @@ export function readerDimensions(container, ratio, mode, axis = 'auto', value = 
   const height = axis === 'height' ? Math.min(naturalHeight, Math.max(200, Math.min(3000, Number(value) || 800))) : naturalHeight;
   return {height, bookWidth: Math.min(width, height * ratio * leaves), single};
 }
+
+/** Turn only after a deliberate outward drag at a zoomed horizontal edge. */
+export function zoomEdgeTurn({dx, dy, left, maximum, edgeDistance}) {
+  if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.4 || edgeDistance < 70) return 0;
+  if (dx < 0 && left >= maximum - 2) return 1;
+  if (dx > 0 && left <= 2) return -1;
+  return 0;
+}

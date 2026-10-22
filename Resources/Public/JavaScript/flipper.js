@@ -1,5 +1,5 @@
 import {mapPages, parsePages, selectPages} from './pages.js';
-import {pageFromFragment, cornerZone, visiblePages, selectedLeavesForSheet, plainSearchText, bookmarkPage, readerDimensions} from './navigation.js?v=0.4.0-beta.1';
+import {pageFromFragment, cornerZone, visiblePages, selectedLeavesForSheet, plainSearchText, bookmarkPage, readerDimensions, zoomEdgeTurn} from './navigation.js?v=0.4.1';
 
 const asset = path => new URL('../Vendor/' + path, import.meta.url).href;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -115,9 +115,14 @@ class PdfFlipper {
     const download = node('a', 'pf-download', 'PDF herunterladen'); download.href = this.url.href; download.download = ''; download.title = 'Vollständige Original-PDF herunterladen';
     this.modeButton=button('Lesemodus', 'Lesen', ()=>this.setReadingMode(this.options.readingMode==='read'?'auto':'read').catch(error=>this.error(error)));
     this.modeButton.setAttribute('aria-pressed',String(this.options.readingMode==='read'));
-    const enabled=new Set(this.options.buttons || ['previous','page','next','zoom','fullscreen','download','reading','view','overview','search','contents','share','bookmark','back']);
+    const enabled=new Set(this.options.buttons || ['previous','page','next','progress','zoom','fullscreen','download','reading','view','overview','search','contents','share','bookmark','back']);
     const pageControl=node('span','pf-page-control');pageControl.append(this.pageInput,this.pageLabel);
     for (const [key, elements] of [['previous',[this.prev]],['page',[pageControl]],['next',[this.next]],['zoom',[this.minus,this.plus]],['fullscreen',[full]],['download',[download]],['reading',[this.modeButton]]]) if(enabled.has(key)) toolbar.append(...elements);
+    if (enabled.has('progress')) {
+      this.progress=node('input','pf-progress');this.progress.type='range';this.progress.min='0';this.progress.max=String(this.pages.length-1);this.progress.value=String(this.index);this.progress.setAttribute('aria-label','Durch die Ausgabe blättern');
+      this.progress.addEventListener('input',()=>this.go(Number(this.progress.value)));
+      toolbar.insertBefore(this.progress,this.minus.parentNode===toolbar?this.minus:null);
+    }
     this.root.append(toolbar);
     this.createReadingTools(toolbar, enabled);
     this.stage = node('div', 'pf-stage'); this.stage.setAttribute('aria-label', 'Heftansicht');
@@ -149,9 +154,36 @@ class PdfFlipper {
     }, {passive:true});
     this.stage.addEventListener('pointercancel',()=>{flatPress=null;},{passive:true});
     let pan;
-    this.stage.addEventListener('pointerdown', event => { if (this.zoom <= 1) return; pan = {id:event.pointerId,x:event.clientX,y:event.clientY}; this.stage.setPointerCapture(event.pointerId); event.preventDefault(); });
-    this.stage.addEventListener('pointermove', event => { if (!pan || pan.id !== event.pointerId) return; this.stage.scrollLeft -= event.clientX-pan.x; this.stage.scrollTop -= event.clientY-pan.y; pan.x=event.clientX; pan.y=event.clientY; });
-    for (const name of ['pointerup','pointercancel']) this.stage.addEventListener(name, () => { pan=null; });
+    this.stage.addEventListener('pointerdown', event => {
+      if (this.zoom <= 1 || event.button !== 0 || !event.isPrimary) return;
+      this.root.dataset.gesture='pan';
+      pan = {id:event.pointerId,x:event.clientX,y:event.clientY,startX:event.clientX,startY:event.clientY,edgeDistance:0};
+      this.stage.setPointerCapture(event.pointerId); event.preventDefault();
+    });
+    this.stage.addEventListener('pointermove', event => {
+      if (!pan || pan.id !== event.pointerId) return;
+      const dx=event.clientX-pan.x, maximum=Math.max(0,this.stage.scrollWidth-this.stage.clientWidth);
+      const outward=(dx<0&&this.stage.scrollLeft>=maximum-2)||(dx>0&&this.stage.scrollLeft<=2);
+      pan.edgeDistance=outward?pan.edgeDistance+Math.abs(dx):0;
+      this.stage.scrollLeft-=dx;this.stage.scrollTop-=event.clientY-pan.y;
+      pan.x=event.clientX;pan.y=event.clientY;this.root.dataset.gesture=`pan:${Math.round(this.stage.scrollLeft)}:${Math.round(pan.edgeDistance)}`;
+    });
+    this.stage.addEventListener('pointerup', event => {
+      if (!pan || pan.id !== event.pointerId) return;
+      const dx=event.clientX-pan.startX,dy=event.clientY-pan.startY;
+      let direction=zoomEdgeTurn({dx,dy,left:this.stage.scrollLeft,maximum:Math.max(0,this.stage.scrollWidth-this.stage.clientWidth),edgeDistance:pan.edgeDistance});
+      if (Math.hypot(dx,dy)<6 && this.options.clickMode!=='controls') {
+        const rect=this.stage.getBoundingClientRect(),x=event.clientX-rect.left,edge=Math.min(48,rect.width*.12);
+        if(x<edge&&this.stage.scrollLeft<=2)direction=-1;
+        if(x>rect.width-edge&&this.stage.scrollLeft>=this.stage.scrollWidth-this.stage.clientWidth-2)direction=1;
+      }
+      this.root.dataset.gesture=`release:${direction}:${Math.round(dx)}:${Math.round(pan.edgeDistance)}`;pan=null;
+      if(direction && this.options.clickMode!=='controls' && this.options.readingMode!=='scroll') {
+        this.go(this.index+direction*(this.book?1:this.visibleIndices().length),direction);
+        this.stage.scrollLeft=direction>0?0:this.stage.scrollWidth-this.stage.clientWidth;
+      }
+    });
+    this.stage.addEventListener('pointercancel',()=>{pan=null;});
     if (this.options.supportUrl) {
       const link = node('a', 'pf-support', 'Wenn Ihnen der Reader hilft, freue ich mich über einen Kaffee.');
       link.href = this.options.supportUrl; link.target = '_blank'; link.rel = 'noopener noreferrer';
@@ -184,6 +216,9 @@ class PdfFlipper {
       this.book.on('flip', event => { this.index = Math.min(event.data, this.pages.length - 1); this.update(); this.renderVisible(); });
       this.book.on('changeOrientation', () => { this.update(); this.renderVisible(); });
       this.book.loadFromHTML(this.leaves);
+      // A magazine has flexible cover sheets as well as flexible inner leaves.
+      this.book.getPage(0).setDensity('soft');
+      this.book.getPage(this.pages.length-1).setDensity('soft');
       this.installCornerHover();
     } else { this.bookHost.classList.add('pf-flat'); this.paintFlat(); }
     this.creatingCurl = false;
@@ -225,6 +260,8 @@ class PdfFlipper {
     if(enabled.has('back')){this.backButton=button('Zur letzten Fundstelle','↶ Fundstelle',()=>{const index=this.trail.pop();if(index!==undefined)this.go(index);});this.backButton.disabled=true;toolbar.append(this.backButton);}
     const details=node('details','pf-tools'),summary=node('summary','','Mehr');details.append(summary);
     const tools=node('div','pf-tools-menu');details.append(tools);toolbar.append(details);
+    // Keep the familiar main bar compact; advanced reading controls remain one click away.
+    for(const control of toolbar.querySelectorAll('.pf-select-label,button[aria-label="Lesemodus"],button[aria-label="Zur letzten Fundstelle"]'))tools.append(control);
     const add=(key,label,text,action)=>{if(!enabled.has(key))return null;const b=button(label,text,()=>{details.open=false;action();});tools.append(b);return b;};
     add('overview','Seitenübersicht','Seitenübersicht',()=>this.showOverview());
     add('search','Im PDF suchen','Suchen',()=>this.showSearch());
@@ -435,6 +472,7 @@ class PdfFlipper {
     if (!this.pageInput) return;
     const indices = this.visibleIndices();
     const numbers = indices.map(i => this.pages[i].number);
+    if(this.progress){this.progress.value=String(this.index);this.progress.setAttribute('aria-valuetext',`Heftseite ${numbers.join(' bis ')} von ${this.all.length}`);}
     this.pageInput.value = String(numbers[0]); this.prev.disabled = this.index === 0; this.next.disabled = this.index >= this.pages.length - 1 || indices.includes(this.pages.length - 1);
     this.pageLabel.textContent = ` / ${this.all.length}${numbers.length > 1 ? ' · ' + numbers.join('–') : ''}`;
     this.root.dataset.currentPage = String(numbers[0]);

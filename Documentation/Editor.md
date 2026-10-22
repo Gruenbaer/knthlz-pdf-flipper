@@ -15,3 +15,9 @@ der Rahmen entsprechend gewählt werden. Die Buttons bleiben benutzbar.
 
 Reader aus älteren Versionen behalten ihre eigenen Werte. Erst der bewusste
 Wechsel von „Bisherige CE-Einstellungen“ zu einer Vorlage aktiviert die Vererbung.
+
+## Colors and magazine-style controls
+
+Color settings are native TYPO3 color fields: use the picker or enter a six-digit hex value. The global accent is inherited unless a preset supplies it or the editor enables a local accent override. On epiKurier the standard is `#c3323a`, School uses `#00718e` and Young uses `#078f98`. Those site presets are configuration, not hard-coded extension colors.
+
+The optional page slider appears in the main toolbar. Reading view, effect and corner sensitivity are under More. A flexible page can be held at a corner and moved both ways before release. At zoom, first pan to an edge, then continue a deliberate horizontal drag to turn; a click on that outer edge also turns without resetting zoom.
